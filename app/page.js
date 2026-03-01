@@ -495,6 +495,7 @@ export default function Home() {
       {scheduleModal && !isDemo && (
         <ScheduleManager
           classTypes={classTypes}
+          members={members}
           show={show}
           onClose={() => { setScheduleModal(false); loadDay(); }}
         />
