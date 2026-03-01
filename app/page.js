@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { dayN, dayF, mos, dk, td, ini, acol, DTYPES, DMEMBERS, demoSched, DEMO_USER, CSS } from "@/lib/data";
 import AuthScreen from "@/components/AuthScreen";
 import ClassCard from "@/components/ClassCard";
+import ScheduleManager from "@/components/ScheduleManager";
 
 const Logo = ({ s = 28 }) => (
   <svg width={s} height={s} viewBox="0 0 100 100" fill="none">
@@ -32,6 +33,7 @@ export default function Home() {
   const [confirmM, setConfirmM] = useState(null);
   const [tab, setTab] = useState("horarios");
   const [usersModal, setUsersModal] = useState(false);
+  const [scheduleModal, setScheduleModal] = useState(false);
 
   // Data
   const [classes, setClasses] = useState([]);
@@ -399,15 +401,15 @@ export default function Home() {
           <div style={{ padding: "12px 4px" }}>
             <h2 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bebas Neue', sans-serif", letterSpacing: 2, marginBottom: 16 }}>PANEL ADMIN</h2>
             <div style={S.card}>
-              <h4 style={S.cardTitle}>Acciones</h4>
+              <h4 style={S.cardTitle}>Gestión de horarios</h4>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
-                <button onClick={() => setUsersModal(true)} style={S.adminAct} className="btn-hover">👥 Gestionar roles</button>
-                <button onClick={() => setTab("horarios")} style={S.adminAct} className="btn-hover">📅 Ir a clases del día</button>
-                {!isDemo && (
-                  <button onClick={async () => { await supabase.rpc("generate_class_instances", { days_ahead: 14 }); show("Clases regeneradas"); }} style={S.adminAct} className="btn-hover">
-                    🔄 Regenerar horario (14 días)
-                  </button>
-                )}
+                <button onClick={() => setScheduleModal(true)} style={S.adminAct} className="btn-hover">📅 Gestionar horario semanal y clases</button>
+              </div>
+            </div>
+            <div style={{ ...S.card, marginTop: 10 }}>
+              <h4 style={S.cardTitle}>Usuarios</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+                <button onClick={() => setUsersModal(true)} style={S.adminAct} className="btn-hover">👥 Gestionar roles de usuarios</button>
               </div>
             </div>
             <div style={{ ...S.card, marginTop: 10 }}>
@@ -487,6 +489,15 @@ export default function Home() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* SCHEDULE MANAGER */}
+      {scheduleModal && !isDemo && (
+        <ScheduleManager
+          classTypes={classTypes}
+          show={show}
+          onClose={() => { setScheduleModal(false); loadDay(); }}
+        />
       )}
 
       {/* CANCEL CONFIRM */}
